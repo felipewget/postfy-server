@@ -1,12 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AiService } from 'src/common/ai/ai.service';
+import { BaseService } from 'src/common/base';
 import { scrapeTextFromLink } from 'src/common/utils/crawler.util';
+import { Profiles, Publications, PublicationTimetables } from 'src/database/entities';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class PostService {
-  constructor(protected readonly aiService: AiService) {}
+export class PostService extends BaseService<Publications> {
+  constructor(
+    protected readonly aiService: AiService,
+    @InjectRepository(Publications)
+    protected readonly publicationsRepository: Repository<Publications>,
+    @InjectRepository(PublicationTimetables)
+    protected readonly publicationTimetablesRepository: Repository<PublicationTimetables>,
+  ) {
+    super(publicationsRepository);
+  }
 
-  createPosts() {
+
+
+  generatePosts() {
     return scrapeTextFromLink('https://lemeconsultoria.com.br/plano-de-carreira-cargos-e-salarios/');
     return this.aiService.generatePosts(
       3,

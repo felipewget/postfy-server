@@ -6,10 +6,18 @@ import { Accounts } from './accounts.entity';
 @Entity()
 export class KnowledgmentDocument extends BaseEntity {
   @Column()
-  type: 'link' | 'document'|'content';
+  type: 'link' | 'document' | 'content';
 
   @Column()
   title: string;
+
+  @Column({
+    name: 'source_type',
+    type: 'enum',
+    enum: ['knowledment' ,'document', 'brain'],
+    default: 'knowledment'
+  })
+  sourceType: 'knowledment' | 'document' | 'brain';
 
   @Column({ type: 'jsonb', nullable: true })
   metadata?: any;

@@ -10,6 +10,6 @@ export class PostController extends BaseCrudController<PostService> {
 
   @Post()
   create() {
-    return this.postService.createPosts();
+    // return this.postService.createPosts();
   }
 }

@@ -4,11 +4,33 @@ import { Users } from './users.entity';
 import { Profiles } from './profiles.entity';
 import { Campaigns } from './campaign.entity';
 import { KnowledgmentDocument } from './knowledgment_documents';
+import { Tickets } from './tickets.entity';
 
 @Entity()
 export class Accounts extends BaseEntity {
   @Column({ name: 'account_name' })
   accountName: string;
+
+  @Column()
+  industry: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ name: 'tone_of_voice', nullable: true })
+  toneOfVoice: string;
+
+  @Column({ name: 'audience', nullable: true })
+  audience: string;
+
+  @Column({ name: 'language' })
+  language: string;
+
+  @Column({ name: 'additional_instructions', nullable: true })
+  additionalInstructions?: string;
+
+  @Column({ name: 'use_emojis', default: false })
+  useEmojis?: string;
 
   @ManyToOne(() => Users, (user) => user.accounts)
   @JoinColumn({ name: 'user_id' })
@@ -28,4 +50,7 @@ export class Accounts extends BaseEntity {
     { cascade: true },
   )
   knowledgmentDocuments: KnowledgmentDocument[];
+
+  @OneToMany(() => Tickets, (ticket) => ticket.account, { cascade: true })
+  tickets: Tickets[];
 }

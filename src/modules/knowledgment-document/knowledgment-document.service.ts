@@ -7,6 +7,9 @@ import { extractTextFromFile } from 'src/common/utils/file.util';
 import { KnowledgmentDocumentChunks } from 'src/database/entities/knowledgment_document_chunks.entity';
 import { KnowledgmentDocument } from 'src/database/entities/knowledgment_documents';
 import { Repository } from 'typeorm';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
 @Injectable()
 export class KnowledgmentDocumentService extends BaseService<KnowledgmentDocument> {
@@ -19,36 +22,69 @@ export class KnowledgmentDocumentService extends BaseService<KnowledgmentDocumen
     super(knowledgmentDocumentRepository);
   }
 
-  async createEmbeddingsByLink() {
-    const link =
-      'https://lemeconsultoria.com.br/plano-de-carreira-cargos-e-salarios/';
+  async createEmbeddingsByLink(
+    accountId: number,
+    link: string,
+    sourceType: 'knowledment' | 'brain',
+  ) {
     const text = await scrapeTextFromLink(link);
 
-    this.#saveKnowledgmentDocument(link, 'link', text);
+    this.#saveKnowledgmentDocument(link, 'link', text, accountId, sourceType);
   }
 
-  async createEmbeddingsByDocument() {
-    //  extractTextFromFile(process.cwd() + '/src/tmp/file-sample_1MB.docx');
-    const response = await extractTextFromFile(process.cwd() + '/src/tmp/sample.pdf');
+  async createEmbeddingsByDocument(
+    accountId: number,
+    file: Express.Multer.File,
+    sourceType: 'knowledment' | 'brain',
+  ) {
+     // Cria um caminho temporário no sistema
+  const tmpPath = path.join(os.tmpdir(), `${Date.now()}-${file.originalname}`);
 
-    this.#saveKnowledgmentDocument('sample.pdf', 'document', response)
+  // Salva o buffer em disco temporariamente
+  await fs.promises.writeFile(tmpPath, file.buffer);
+
+  try {
+    // console.log(file.buffer);
+
+    const response = await extractTextFromFile(tmpPath);
+
+    return this.#saveKnowledgmentDocument(
+      file.originalname,
+      'document',
+      response,
+      accountId,
+      sourceType
+    );
+    } finally {
+    // Remove o arquivo temporário, mesmo se der erro
+    await fs.promises.unlink(tmpPath).catch(() => {});
+  }
   }
 
-  async createEmbeddingsByContent() {
-    this.#saveKnowledgmentDocument('Title', 'content', 'personal text here')
+  async createEmbeddingsByContent(
+    accountId: number,
+    title: string,
+    content: string,
+    sourceType: 'knowledment' | 'brain',
+  ) {
+    this.#saveKnowledgmentDocument(title, 'content', content, accountId, sourceType);
   }
 
   async #saveKnowledgmentDocument(
     title: string,
     type: 'link' | 'document' | 'content',
     text: string,
+    accountId: number,
+    sourceType: 'knowledment' | 'brain',
   ) {
     const chunks = chunkText(text);
 
     const knowledmengtDocument = await this.knowledgmentDocumentRepository.save(
       {
+        account: { id: accountId },
         title,
         type,
+        sourceType
       },
     );
 

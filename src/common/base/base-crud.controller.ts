@@ -10,7 +10,9 @@ export class FindAllDto {
 }
 
 export class BaseCrudController<TService> {
-  constructor(protected readonly service: TService) {}
+  constructor(
+    protected readonly service: TService
+  ) {}
 
   @Post()
   create(@Body() dto: any) {

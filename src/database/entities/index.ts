@@ -6,3 +6,4 @@ export * from './publications.entity';
 export * from './publication_timetables.entity';
 export * from './knowledgment_documents';
 export * from './knowledgment_document_chunks.entity';
+export * from './tickets.entity';
