@@ -22,6 +22,7 @@ export class CampaignController {
     @Query('search') search: string,
   ) {
     return this.campaignService.list({
+      relations: ['profiles'],
       account: { id: +accountId },
       searchFields: 'title',
       search,

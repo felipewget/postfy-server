@@ -67,7 +67,9 @@ export abstract class BaseService<T extends ObjectLiteral> {
   }
 
   async list(query) {
-    const { search, searchFields, limit = 20, lastId, ...filters } = query;
+    let { search, searchFields, limit = 20, lastId, relations, ...filters } = query;
+
+    relations = relations ?? [];
 
     // normaliza searchFields
     let searchFieldsArr: string[] = [];
@@ -101,6 +103,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
 
     //@ts-ignore
     return this.repository.find({
+      relations,
       where,
       take: Number(limit),
       order

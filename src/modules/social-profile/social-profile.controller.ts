@@ -1,14 +1,21 @@
-import { Controller, ForbiddenException, Get, Redirect, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  Query,
+  Redirect,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import fetch from 'node-fetch';
 import { SocialProfileService } from './social-profile.service';
 import { BaseCrudController } from 'src/common/base';
+import { LessThan, ILike } from 'typeorm';
 
 @Controller('social-profiles')
 export class SocialProfileController extends BaseCrudController<SocialProfileService> {
-  constructor(
-    protected readonly socialProfileService: SocialProfileService
-  ) {
+  constructor(protected readonly socialProfileService: SocialProfileService) {
     super(socialProfileService);
   }
 
@@ -23,7 +30,11 @@ export class SocialProfileController extends BaseCrudController<SocialProfileSer
   async facebookCallback(@Req() req) {
     const user = req.user; // Passport user: { provider, accessToken, profile }
 
-    this.socialProfileService.refreshSocialFacebookProfilesByCallBack(user.profile.displayName, user.accessToken, user.profile.id);
+    this.socialProfileService.refreshSocialFacebookProfilesByCallBack(
+      user.profile.displayName,
+      user.accessToken,
+      user.profile.id,
+    );
 
     return;
   }
