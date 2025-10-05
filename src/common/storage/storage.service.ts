@@ -1,4 +1,8 @@
-import { S3Client, PutObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  ListObjectsV2Command,
+} from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from './file.entity';
@@ -7,7 +11,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class StorageService {
   private s3: S3Client;
-  private bucket = 'test';
+  private bucket = 'postfy';
 
   constructor(
     @InjectRepository(FileEntity)
@@ -15,10 +19,10 @@ export class StorageService {
   ) {
     this.s3 = new S3Client({
       region: 'us-east-1',
-      endpoint: 'http://localhost:9000',
+      endpoint: 'http://localhost:9444',
       credentials: {
-        accessKeyId: 'Rh48DiDC2k7vhQlsuwXT',
-        secretAccessKey: 'wHSzYjE0RJQud8putYAN2g56cYRGVDiRoLT0Mxu4',
+        accessKeyId: 'AKIAIOSFODNN7EXAMPLE',
+        secretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
       },
       forcePathStyle: true,
     });

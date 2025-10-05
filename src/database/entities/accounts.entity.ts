@@ -5,6 +5,7 @@ import { Profiles } from './profiles.entity';
 import { Campaigns } from './campaign.entity';
 import { KnowledgmentDocument } from './knowledgment_documents';
 import { Tickets } from './tickets.entity';
+import { Medias } from './medias.entity';
 
 @Entity()
 export class Accounts extends BaseEntity {
@@ -53,4 +54,7 @@ export class Accounts extends BaseEntity {
 
   @OneToMany(() => Tickets, (ticket) => ticket.account, { cascade: true })
   tickets: Tickets[];
+
+  @OneToMany(() => Medias, (media) => media.account, { cascade: true })
+  medias: Medias[];
 }

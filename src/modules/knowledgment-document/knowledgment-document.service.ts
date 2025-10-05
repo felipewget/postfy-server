@@ -82,6 +82,7 @@ export class KnowledgmentDocumentService extends BaseService<KnowledgmentDocumen
     const knowledmengtDocument = await this.knowledgmentDocumentRepository.save(
       {
         account: { id: accountId },
+        description: chunks[0],
         title,
         type,
         sourceType

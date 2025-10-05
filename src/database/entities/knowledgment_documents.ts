@@ -11,11 +11,14 @@ export class KnowledgmentDocument extends BaseEntity {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  description: string;
+
   @Column({
     name: 'source_type',
     type: 'enum',
-    enum: ['knowledment' ,'document', 'brain'],
-    default: 'knowledment'
+    enum: ['knowledment', 'document', 'brain'],
+    default: 'knowledment',
   })
   sourceType: 'knowledment' | 'document' | 'brain';
 

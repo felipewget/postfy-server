@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -23,10 +24,21 @@ export class KnowledgmentDocumentController {
   async listDocuments(
     @Param('accountId') accountId,
     @Param('type') sourceType: 'knowledment' | 'brain',
+    @Query()
+    {
+      search,
+      type,
+    }: {
+      search?: string;
+      type?: string;
+    },
   ) {
     return this.knowledgmentDocumentService.list({
       account: { id: +accountId },
+      search,
       sourceType,
+      searchFields: 'title,description',
+      type,
     });
   }
 

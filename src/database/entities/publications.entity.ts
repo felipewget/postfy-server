@@ -25,30 +25,33 @@ type ContentType =
 
 @Entity()
 export class Publications extends BaseEntity {
-  @Column({
-    type: 'jsonb',
-    nullable: true,
-  })
-  text?: Record<Channel, any>;
+  @Column({ nullable: true })
+  text?: string;
 
   @Column({ name: 'content_type' })
   contentType: ContentType;
 
-  @Column()
-  weekDay:
-    | 'sunday'
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday';
+  @Column({ type: 'timestamptz' })
+  date: Date;
 
-  @Column({ type: 'time' })
-  hour: string;
+  @Column({ nullable: true })
+  media?: string;
 
-  @Column()
-  status: 'approved' | 'pending' | 'declined';
+  @Column({
+    name: 'dispatch_status',
+    type: 'enum',
+    enum: ['published', 'failed'],
+    nullable: true,
+  })
+  dispatchmentStatus?: 'published' | 'failed';
+
+  @Column({
+    name: 'approval_status',
+    type: 'enum',
+    enum: ['approved', 'pending', 'declined'],
+    default: 'pending',
+  })
+  approvalStatus: 'approved' | 'pending' | 'declined';
 
   @ManyToOne(() => Accounts, (account) => account.campaings)
   @JoinColumn({ name: 'account_id' })
